@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class SellerController extends Controller
@@ -11,7 +12,7 @@ class SellerController extends Controller
      */
     public function index()
     {
-        return view('seller.index');
+        return redirect()->route('welcome');
     }
 
     /**
@@ -60,5 +61,10 @@ class SellerController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function orderlist(){
+        $orders = Order::get();
+        return view('seller.orderlist', compact('orders'));
     }
 }

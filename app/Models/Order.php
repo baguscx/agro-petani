@@ -17,6 +17,7 @@ class Order extends Model
             'telepon',
             'lokasi',
             'catatan',
+            'jumlah',
             'status',
             'total',
     ];

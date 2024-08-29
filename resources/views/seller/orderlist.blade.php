@@ -1,11 +1,5 @@
 <x-app-layout>
     <x-nav/>
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
     <div class="container py-5">
         <h2 class="mb-4">Daftar Pesanan</h2>
         <table class="table table-bordered">
@@ -37,12 +31,6 @@
                         </td>
                         <td>
                             <a href="{{ route('order.show', $order->id) }}" class="btn btn-info btn-sm">Detail</a>
-                            {{-- <a href="{{ route('orders.edit', $order->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('orders.destroy', $order->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                            </form> --}}
                         </td>
                     </tr>
                 @empty

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-    $orders = Order::with('user', 'product')->get(); // Pastikan untuk memuat relasi
+
+    $orders = Order::where('user_id', Auth::user()->id)->with('user', 'product')->latest()->get(); // Pastikan untuk memuat relasi
     return view('order.index', compact('orders'));
     }
 
@@ -34,7 +36,8 @@ class OrderController extends Controller
         $mulai = Carbon::parse($request->mulai);
         $selesai = Carbon::parse($request->selesai);
         $hari = $mulai->diffInDays($selesai);
-        $total = $hari * $request->harga;
+        $sub = $hari + 1;
+        $total = $sub * $request->harga * $request->jumlah;
         $order = Order::create([
             'user_id' => Auth::user()->id,
             'product_id' => $request->product_id,
@@ -43,18 +46,11 @@ class OrderController extends Controller
             'telepon' => $request->telepon,
             'lokasi' => $request->lokasi,
             'catatan' => $request->catatan,
+            'jumlah' => $request->jumlah,
             'status' => 'unpaid',
-            'total' => $total+$request->harga,
+            'total' => $total,
         ]);
 
-        return redirect()->route('order.index');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
-    {
         \Midtrans\Config::$serverKey = config('services.midtrans.serverKey');
         \Midtrans\Config::$isProduction = config('services.midtrans.isProduction');
         \Midtrans\Config::$isSanitized = config('services.midtrans.isSanitized');
@@ -75,8 +71,16 @@ class OrderController extends Controller
 
         $snapToken = \Midtrans\Snap::getSnapToken($params);
         $order->snap_token = $snapToken;
-        $order->status = 'paid';
         $order->save();
+
+        return redirect()->route('order.index')->with('success', 'Pesanan berhasil dibuat');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Order $order)
+    {
         return view('order.detail', compact('order'));
     }
 
@@ -102,5 +106,16 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+
+    public function success(Order $order){
+        $sisa = Product::where('id', $order->product_id)->first();
+        $sisa->jumlah = $sisa->jumlah - $order->jumlah;
+        $sisa -> save();
+        $order->status = 'paid';
+        $order->save();
+
+        return redirect()->route('order.index')->with('success', 'Pembayaran berhasil');
     }
 }

@@ -9,10 +9,8 @@
                 </div>
                 <div class="col-md-6">
                     <h1 class="display-5 fw-bolder">{{$product->nama}}</h1>
-                    <span>Harga : Rp. {{number_format($product->harga, 0, '.', ',');}}/Hari</span> <br>
-                    <span>Jumlah : {{$product->jumlah}}</span> <br>
-                    <span>{{$product->deskripsi}}</span>
-                    <hr>
+                    <span>Rp. {{number_format($product->harga, 0, '.', ',');}}/Hari</span>
+                    <p class="lead">{{$product->deskripsi}}</p>
                     @if(Auth::check() && Auth::user()->hasRole('user'))
                     <form action="{{route('order.store')}}" method="POST">
                         @csrf
@@ -28,15 +26,9 @@
                                 <input name="selesai" class="form-control text-center" type="date" required />
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="jumlah" class="form-label">Jumlah Pesan</label>
-                                <input name="jumlah" class="form-control" type="text" placeholder="Masukkan Jumlah Pesan" required />
-                            </div>
-                            <div class="col-md-6">
-                                <label for="telepon" class="form-label">Nomor Telepon</label>
-                                <input name="telepon" class="form-control" type="text" placeholder="Masukkan nomor telepon" required />
-                            </div>
+                        <div class="mb-3">
+                            <label for="telepon" class="form-label">Nomor Telepon</label>
+                            <input name="telepon" class="form-control" type="text" placeholder="Masukkan nomor telepon" required />
                         </div>
                         <div class="mb-3">
                             <label for="lokasi" class="form-label">Lokasi</label>

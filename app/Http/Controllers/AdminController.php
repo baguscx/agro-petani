@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -11,7 +13,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('admin.index');
+        return redirect()->route('welcome');
     }
 
     /**
@@ -19,7 +21,13 @@ class AdminController extends Controller
      */
     public function create()
     {
-        //
+        $page = [
+            'title' => 'Create User',
+            'button' => 'Create',
+            'method' => 'POST',
+            'action' => route('product.store')
+        ];
+        return view('user.form', compact('page'));
     }
 
     /**
@@ -41,9 +49,15 @@ class AdminController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
+        $page = [
+            'title' => 'Edit User',
+            'button' => 'Update',
+            'method' => 'PUT',
+            'action' => route('product.update', $user->id)
+        ];
+        return view('user.form', compact('page', 'user'));
     }
 
     /**
@@ -60,5 +74,31 @@ class AdminController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function user(){
+        $users = User::all();
+        return view('user.index', compact('users'));
+    }
+
+    public function orderlist(Request $request)
+    {
+    $status = $request->input('status');
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+
+    $orders = Order::when($status, function ($query, $status) {
+        return $query->where('status', $status);
+    })
+    ->when($startDate, function ($query, $startDate) {
+        return $query->whereDate('created_at', '>=', $startDate);
+    })
+    ->when($endDate, function ($query, $endDate) {
+        return $query->whereDate('created_at', '<=', $endDate);
+    })
+    ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan tanggal pesanan terbaru
+    ->get();
+
+    return view('admin.orderlist', compact('orders'));
     }
 }

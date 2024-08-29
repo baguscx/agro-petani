@@ -1,13 +1,30 @@
 <x-app-layout>
     <x-nav/>
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
     <div class="container py-5">
         <h2 class="mb-4">Daftar Pesanan</h2>
+
+        <!-- Filter Form -->
+        <form action="{{ route('admin.orderlist') }}" method="GET" class="mb-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Pilih Status --</option>
+                        <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Sudah Dibayar</option>
+                        <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>Belum Dibayar</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}" placeholder="Tanggal Mulai">
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}" placeholder="Tanggal Akhir">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </div>
+        </form>
+
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -37,12 +54,6 @@
                         </td>
                         <td>
                             <a href="{{ route('order.show', $order->id) }}" class="btn btn-info btn-sm">Detail</a>
-                            {{-- <a href="{{ route('orders.edit', $order->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('orders.destroy', $order->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                            </form> --}}
                         </td>
                     </tr>
                 @empty

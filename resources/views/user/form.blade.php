@@ -11,8 +11,8 @@
                 <div class="mb-4">
                     <label for="gambar" class="block text-gray-700">Gambar (opsional):</label>
                     <input type="file" name="gambar" id="gambar" class="w-full border-gray-300 rounded-md shadow-sm">
-                    @if(isset($product->gambar))
-                        <img src="{{ asset($product->gambar) }}" alt="Gambar Produk" style="width:200px;" class="mt-2 max-w-[100px] border border-gray-300 rounded-md">
+                    @if(isset($user->gambar))
+                        <img src="{{ asset($user->gambar) }}" alt="Gambar Produk" style="width:200px;" class="mt-2 max-w-[100px] border border-gray-300 rounded-md">
                     @endif
                     @if ($errors->has('gambar'))
                         <span class="text-red-500 text-sm">{{ $errors->first('gambar') }}</span>
@@ -22,7 +22,7 @@
                 <!-- Nama Jasa/Barang -->
                 <div class="mb-4">
                     <label for="nama" class="block text-gray-700">Nama Jasa/Barang:</label>
-                    <input type="text" name="nama" id="nama" class="w-full border-gray-300 rounded-md shadow-sm" value="{{ old('nama', $product->nama ?? '') }}" required>
+                    <input type="text" name="nama" id="nama" class="w-full border-gray-300 rounded-md shadow-sm" value="{{ old('nama', $user->name ?? '') }}" required>
                     @if ($errors->has('nama'))
                         <span class="text-red-500 text-sm">{{ $errors->first('nama') }}</span>
                     @endif
@@ -31,7 +31,7 @@
                 <!-- Harga -->
                 <div class="mb-4">
                     <label for="harga" class="block text-gray-700">Harga:</label>
-                    <input type="number" name="harga" id="harga" class="w-full border-gray-300 rounded-md shadow-sm" value="{{ old('harga', $product->harga ?? '') }}" required>
+                    <input type="number" name="harga" id="harga" class="w-full border-gray-300 rounded-md shadow-sm" value="{{ old('harga', $user->harga ?? '') }}" required>
                     @if ($errors->has('harga'))
                         <span class="text-red-500 text-sm">{{ $errors->first('harga') }}</span>
                     @endif
@@ -40,7 +40,7 @@
                 <!-- Deskripsi -->
                 <div class="mb-4">
                     <label for="deskripsi" class="block text-gray-700">Deskripsi:</label>
-                    <textarea name="deskripsi" id="deskripsi" class="w-full border-gray-300 rounded-md shadow-sm" rows="4" required>{{ old('deskripsi', $product->deskripsi ?? '') }}</textarea>
+                    <textarea name="deskripsi" id="deskripsi" class="w-full border-gray-300 rounded-md shadow-sm" rows="4" required>{{ old('deskripsi', $user->deskripsi ?? '') }}</textarea>
                     @if ($errors->has('deskripsi'))
                         <span class="text-red-500 text-sm">{{ $errors->first('deskripsi') }}</span>
                     @endif
@@ -49,7 +49,7 @@
                 <!-- Jumlah -->
                 <div class="mb-4">
                     <label for="jumlah" class="block text-gray-700">Jumlah:</label>
-                    <input type="number" name="jumlah" id="jumlah" class="w-full border-gray-300 rounded-md shadow-sm" value="{{ old('jumlah', $product->jumlah ?? '') }}" required>
+                    <input type="number" name="jumlah" id="jumlah" class="w-full border-gray-300 rounded-md shadow-sm" value="{{ old('jumlah', $user->jumlah ?? '') }}" required>
                     @if ($errors->has('jumlah'))
                         <span class="text-red-500 text-sm">{{ $errors->first('jumlah') }}</span>
                     @endif
@@ -59,8 +59,8 @@
                 <div class="mb-4">
                     <label for="kategori" class="block text-gray-700">Kategori:</label>
                     <select name="kategori" id="kategori" class="w-full border-gray-300 rounded-md shadow-sm" required>
-                        <option value="jasa" {{ old('kategori', $product->kategori ?? '') == 'jasa' ? 'selected' : '' }}>Jasa</option>
-                        <option value="sewa" {{ old('kategori', $product->kategori ?? '') == 'sewa' ? 'selected' : '' }}>Sewa Barang</option>
+                        <option value="jasa" {{ old('kategori', $user->kategori ?? '') == 'jasa' ? 'selected' : '' }}>Jasa</option>
+                        <option value="sewa" {{ old('kategori', $user->kategori ?? '') == 'sewa' ? 'selected' : '' }}>Sewa Barang</option>
                     </select>
                     @if ($errors->has('kategori'))
                         <span class="text-red-500 text-sm">{{ $errors->first('kategori') }}</span>

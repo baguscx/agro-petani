@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('lokasi')->nullable();
             $table->string('telepon')->nullable();
             $table->string('catatan')->nullable();
+            $table->string('jumlah')->nullable();
             $table->string('total')->nullable();
             $table->enum('status', ['paid', 'unpaid'])->nullable();
             $table->string('snap_token')->nullable();

@@ -8,6 +8,7 @@ use App\Http\Controllers\SellerController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +27,8 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::get('/dashboard', function () {
-    if(Auth::user()->hasROle('user')){
-        return redirect()->route('user.dashboard');
+    if(Auth::user()->hasRole('user')){
+            return redirect()->route('welcome');        // return redirect()->route('admin.dashboard');
     } else if (Auth::user()->hasRole('admin')){
         return redirect()->route('admin.dashboard');
     } else if (Auth::user()->hasRole('seller')){
@@ -40,24 +41,33 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/product/{product}/detail', [ProductController::class, 'show'])->name('product.show');
-        Route::post('/order', [OrderController::class, 'store'])->name('order.store');
-        Route::get('/order', [OrderController::class, 'index'])->name('order.index');
-        Route::get('/order/{order}', [OrderController::class, 'show'])->name('order.show');
+    Route::get('/order/{order}', [OrderController::class, 'show'])->name('order.show');
+    Route::get('/product', [ProductController::class, 'index'])->name('product.index');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user', [UserController::class, 'index'])->name('user.dashboard');
+    Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+    Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+    Route::get('/success/{order}', [OrderController::class, 'success'])->name('order.success');
 });
 
 Route::middleware(['auth', 'role:seller'])->group(function () {
     Route::get('/seller', [SellerController::class, 'index'])->name('seller.dashboard');
-    Route::get('/product', [ProductController::class, 'index'])->name('product.index');
+    Route::get('/orderlist', [SellerController::class, 'orderlist'])->name('order.list');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::post('/product/create', [ProductController::class, 'store'])->name('product.store');
+    Route::get('/product/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/user', [AdminController::class, 'user'])->name('admin.user');
+    Route::get('/user/create', [AdminController::class, 'create'])->name('admin.users.create');
+    Route::get('/user/{user}/edit', [AdminController::class, 'edit'])->name('admin.users.edit');
+    Route::get('/user/{user}', [AdminController::class, 'update'])->name('admin.users.update');
+    Route::get('/admin/orderlist', [AdminController::class, 'orderlist'])->name('admin.orderlist');
 });
 
 
