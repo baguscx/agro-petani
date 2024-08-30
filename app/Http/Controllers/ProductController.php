@@ -76,7 +76,7 @@ class ProductController extends Controller
             'title' => 'Edit Produk',
             'button' => 'Update',
             'method' => 'PUT',
-            'action' => route('admin.user.update', $product->id)
+            'action' => route('admin.users.update', $product->id)
         ];
         return view('product.form', compact('page', 'product'));
     }

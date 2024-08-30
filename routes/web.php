@@ -6,9 +6,12 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\AdminController;
+use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +28,35 @@ Route::get('/', function () {
     $products = Product::all();
     return view('welcome', compact('products'));
 })->name('welcome');
+
+Route::get('/update-stock', function () {
+        // Ambil order terbaru untuk setiap produk
+    $latestOrders = DB::table('orders')
+        ->select('product_id', DB::raw('MAX(selesai) as latest_date'))
+        ->groupBy('product_id')
+        ->get();
+
+    foreach ($latestOrders as $latestOrder) {
+        // Ambil detail order terbaru untuk setiap produk
+        $latestOrderData = DB::table('orders')
+            ->where('product_id', $latestOrder->product_id)
+            ->where('selesai', $latestOrder->latest_date)
+            ->first();
+
+        if ($latestOrderData) {
+            $selesai = Carbon::parse($latestOrderData->selesai);
+            $sekarang = Carbon::now();
+
+            if ($selesai->lessThanOrEqualTo($sekarang)) {
+                // Update kolom `jumlah` di tabel `product` dengan menambahkan jumlah dari order yang paling baru
+                DB::table('products')
+                    ->where('id', $latestOrderData->product_id)
+                    ->increment('jumlah', $latestOrderData->jumlah);
+            }
+        }
+    }
+    return redirect()->route('welcome');
+});
 
 Route::get('/dashboard', function () {
     if(Auth::user()->hasRole('user')){

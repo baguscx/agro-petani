@@ -22,17 +22,29 @@
                                     <!-- Product name-->
                                     <h5 class="fw-bolder">{{$product->nama}}</h5>
                                     <!-- Product price-->
-                                    Rp. {{ number_format($product->harga, 0, '.', ',') }}
+                                    <p>Rp. {{ number_format($product->harga, 0, '.', ',') }}</p>
+                                    <!-- Product stock-->
+                                    <p class="text-muted" style="font-size: 14px;">
+                                        @if($product->jumlah > 0)
+                                            <span class="badge bg-success">Tersedia : {{$product->jumlah}} {{$product->kategori == 'sewa' ? 'Barang' : 'Orang'}}</span>
+                                        @else
+                                            <span class="badge bg-danger">Tidak Tersedia</span>
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="text-center">
                                     @if(Auth::check() && Auth::user()->hasRole('user'))
-                                        @if($product->kategori == 'sewa')
-                                            <a class="btn btn-outline-dark mt-auto" href="{{ route('product.show', $product->id) }}">Sewa</a>
-                                        @elseif($product->kategori == 'jasa')
-                                            <a class="btn btn-outline-dark mt-auto" href="{{ route('product.show', $product->id) }}">Pesan</a>
+                                        @if($product->jumlah > 0)
+                                            @if($product->kategori == 'sewa')
+                                                <a class="btn btn-outline-dark mt-auto" href="{{ route('product.show', $product->id) }}">Sewa</a>
+                                            @elseif($product->kategori == 'jasa')
+                                                <a class="btn btn-outline-dark mt-auto" href="{{ route('product.show', $product->id) }}">Pesan</a>
+                                            @endif
+                                        @else
+                                            <button class="btn btn-outline-dark mt-auto" disabled>Stok Habis</button>
                                         @endif
                                     @elseif(Auth::check() && (Auth::user()->hasRole('seller') || Auth::user()->hasRole('admin')))
                                         <a class="btn btn-outline-dark mt-auto" href="{{ route('product.show', $product->id) }}">Detail</a>
